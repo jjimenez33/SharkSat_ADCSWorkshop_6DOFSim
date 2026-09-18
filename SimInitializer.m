@@ -12,7 +12,7 @@ rev2r = 2*pi / (24*60^2); % Revolutions per day to radians per second
 tle = readmatrix("TLE_SharkSat.txt");
 
 mean_motion = tle(2,8) * rev2r;                    % [radians/sec]
-semi_major_axis = (muEarth / mean_motion^2)^(1/3); % [m]
+semi_major_axis = (muEarth / mean_motion^2)^(1/3); % [km]
 eccentricity = tle(2,5);                           % [dimensionless]
 inclination = tle(2,3)*d2r;                        % [radians]
 RAAND = tle(2,4)*d2r;                              % [radians]
