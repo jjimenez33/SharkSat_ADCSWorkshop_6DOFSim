@@ -15,7 +15,7 @@ mean_anomaly      = COE(7);
 E = 0;
 previous_E = E;
 current_error = inf;
-acceptable_error = 10^6;
+acceptable_error = 10^-6;
 
 % Numerical Solver
 while current_error > acceptable_error
@@ -48,7 +48,7 @@ vPQW = [vP;
         vQ;
         vW];
 
-% Rotation Matrix from Perifocal to Earth Centered Inertial Frame?
+% Rotation Matrix from Perifocal to Earth Centered Inertial Frame
 R11 = cos(RAAN)*cos(argumentPerigee) - sin(RAAN)*sin(argumentPerigee)*cos(inclination);
 R12 = -cos(RAAN)*sin(argumentPerigee) - sin(RAAN)*cos(argumentPerigee)*cos(inclination);
 R13 = sin(RAAN)*sin(inclination);
