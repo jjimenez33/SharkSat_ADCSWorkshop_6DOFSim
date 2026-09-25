@@ -1,4 +1,4 @@
-function [r0, v0] = COE2RV(muEarth, COE)
+function [rPQW, vPQW] = COE2RV(muEarth, COE)
 
 %% ---Extract COEs from array--- %%
 mean_motion       = COE(1);
@@ -48,6 +48,7 @@ vPQW = [vP;
         vQ;
         vW];
 
+<<<<<<< HEAD
 % Rotation Matrix from Perifocal to Earth Centered Inertial Frame
 R11 = cos(RAAN)*cos(argumentPerigee) - sin(RAAN)*sin(argumentPerigee)*cos(inclination);
 R12 = -cos(RAAN)*sin(argumentPerigee) - sin(RAAN)*cos(argumentPerigee)*cos(inclination);
@@ -70,6 +71,8 @@ v_eci = R_PQW2IJK*vPQW;
 r0 = r_eci;
 v0 = v_eci;
 
+=======
+>>>>>>> 296b846f63995cf59bbe4bcb753183bb4f2c727b
 end
 
 
