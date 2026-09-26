@@ -22,6 +22,8 @@ semi_major_axis = (muEarth/mean_motion^2)^(1/3);
 % Assemble COE list (7x1)
 COE = [inclination; RAAN; eccentricity; argument_of_periapsis; mean_anomaly; mean_motion; semi_major_axis];
 
-[rPQW, vPQW] = COE2RV(muEarth, COE);
-orbitState0 = [rPQW; vPQW];
-disp(orbitState0)
+% r0 and v0 are position and velocity in the ECI frame
+[r0, v0] = COE2RV(muEarth, COE);
+orbitState0 = [r0; v0]
+
+%out = sim('ADCSWorkshop2026_6DOFSim.slx');
