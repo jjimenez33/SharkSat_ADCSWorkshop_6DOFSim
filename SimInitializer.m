@@ -25,8 +25,14 @@ COE = [mean_motion, semi_major_axis, eccentricity, inclination, RAAND, argument_
 
 %% ---Obtain initial state vector [position; velocity] given COEs---%%
 [r0, v0] = COE2RV(muEarth, COE);
-orbitState0 = [r0;
-               v0];
+orbitState0 = [r0; v0];
+
+%% --- set initial attitude ---
+inertia = diag([0.05 0.05 0.01]);
+
+q0 = [0 0 0 1]'; 
+w0 = [1.77 1.77 1.77]' * d2r; 
+attitudeState0 = [q0' w0']';
 
 out = sim('ADCSWorkshop2026_6DOFSim.slx');
 
@@ -101,3 +107,33 @@ xlabel('X_{ECEF} (km)'); ylabel('Y_{ECEF} (km)'); zlabel('Z_{ECEF} (km)')
 title('Satellite Orbit in ECEF')
 view(45, 30)
 
+
+%% --- Attitude Plots--- %%
+
+% Get the 7xN data
+X_attitude = out.X_attitude.Data;
+
+% Extract quaternion and angular velocity
+q = X_attitude(1:4, :);
+w = X_attitude(5:7, :);
+
+% Use simulation time
+t = out.X_attitude.Time;
+
+% Quaternion plot
+figure
+plot(t, q)
+grid on
+xlabel('Time [s]')
+ylabel('Quaternion')
+legend('$q_1$', '$q_2$', '$q_3$', '$q_4$', 'Interpreter', 'latex')
+title('Attitude Quaternion')
+
+% Angular-velocity plot
+figure
+plot(t, w)
+grid on
+xlabel('Time [s]')
+ylabel('Angular Velocity [rad/s]')
+legend('$\omega_x$', '$\omega_y$', '$\omega_z$', 'Interpreter', 'latex')
+title('Body Angular Velocity')
