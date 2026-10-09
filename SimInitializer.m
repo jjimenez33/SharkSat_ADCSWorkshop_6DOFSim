@@ -31,7 +31,7 @@ orbitState0 = [r0; v0];
 inertia = diag([0.05, 0.05, 0.01]); % ~ inertia of a 3U [kg-m^2]
 
 % Initial quaternion
-q0 = [0 0 0 1]'; % "woah woah woah woah, this is the adjoint" ~ Mason 2026
+q0 = [1 0 0 0]'; % "woah woah woah woah, this is the adjoint" ~ Mason 2026
 % Initial angular velocity [rad/s]
 w0 = [1.77, 1.77, 1.77]' * d2r;
 attitudeState0 = [q0' w0']';
@@ -110,13 +110,17 @@ view(45, 30)
 
 %% --- Attitude Plots--- %%
 
-% Get the 7xN data
+% Get the 7xN attitude data
 X_attitude = out.X_attitude.Data;
 
 % Extract quaternion and angular velocity
 q = X_attitude(1:4, :);
 w = X_attitude(5:7, :);
 
+% Extract 321 euler angles
+Euler321 = out.eulerangles.Data;
+Euler321 = Euler321(:, : ) * 1/d2r;
+ 
 % Use simulation time
 t = out.X_attitude.Time;
 
@@ -126,7 +130,7 @@ plot(t, q)
 grid on
 xlabel('Time [s]')
 ylabel('Quaternion')
-legend('$q_1$', '$q_2$', '$q_3$', '$q_4$', 'Interpreter', 'latex')
+legend('$q_0$', '$q_1$', '$q_2$', '$q_3$', 'Interpreter', 'latex')
 title('Attitude Quaternion')
 
 % Angular-velocity plot
@@ -137,3 +141,12 @@ xlabel('Time [s]')
 ylabel('Angular Velocity [rad/s]')
 legend('$\omega_x$', '$\omega_y$', '$\omega_z$', 'Interpreter', 'latex')
 title('Body Angular Velocity')
+
+% 321 Euler Angle Plot
+figure
+plot(t, Euler321)
+grid on
+xlabel('Time [s]')
+ylabel('321 Euler Angles [deg]')
+legend('$\psi$', '$\theta$', '$\phi$', 'Interpreter', 'latex')
+title('321 Euler Angles')
