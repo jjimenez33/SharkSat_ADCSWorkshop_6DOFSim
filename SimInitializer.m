@@ -172,8 +172,13 @@ clc
 close all
 
 %% ---Initialize Constants--- %%
+<<<<<<< HEAD
 muEarth = 3.986004418e5;  % Standard gravitational parameter (Earth) [km^3/s^2]
 Re = 6378.15; % Equatorial radius of the Earth [km]
+=======
+muEarth = 3.986004418e5; % Standard gravitational parameter (Earth) [km^3/s^2]
+Re      = 6378.137; % Earth's equatorial radius [km]
+>>>>>>> 12fa676044bb222c585eb651b61cf2353b72993f
 
 %% ---Initialize Unit Conversions--- %%
 d2r = pi / 180;                  % Degrees to radians
@@ -197,6 +202,7 @@ COE = [inclination; RAAN; eccentricity; argument_of_periapsis; mean_anomaly; mea
 [r0, v0] = COE2RV(muEarth, COE);
 orbitState0 = [r0; v0];
 
+<<<<<<< HEAD
 %% --- Set initial attitude --- %%
 inertia = diag([0.05, 0.05, 0.01]); % ~ inertia of a 3U [kg-m^2]
 
@@ -204,6 +210,13 @@ inertia = diag([0.05, 0.05, 0.01]); % ~ inertia of a 3U [kg-m^2]
 q0 = [1 0 0 0]'; % "woah woah woah woah, this is the adjoint" ~ Mason 2026
 % Initial angular velocity [rad/s]
 w0 = [1.77, 1.77, 1.77]' * d2r;
+=======
+%% --- set initial attitude ---
+inertia = diag([0.05 0.05 0.01]);
+
+q0 = [0 0 0 1]'; 
+w0 = [1.77 1.77 1.77]' * d2r; 
+>>>>>>> 12fa676044bb222c585eb651b61cf2353b72993f
 attitudeState0 = [q0' w0']';
 
 out = sim('ADCSWorkshop2026_6DOFSim.slx');
@@ -251,6 +264,10 @@ legend('v_x','v_y','v_z')
 title('ECI Velocity vs Time')
 
 % Earth Centered Earth Fixed %
+<<<<<<< HEAD
+=======
+
+>>>>>>> 12fa676044bb222c585eb651b61cf2353b72993f
 % Get Position in ECEF
 Position_ECEF = out.Position_ECEF.Data;
 % Position
@@ -278,19 +295,29 @@ xlabel('X_{ECEF} (km)'); ylabel('Y_{ECEF} (km)'); zlabel('Z_{ECEF} (km)')
 title('Satellite Orbit in ECEF')
 view(45, 30)
 
+<<<<<<< HEAD
 %% --- Attitude Plots--- %%
 
 % Get the 7xN attitude data
+=======
+
+%% --- Attitude Plots--- %%
+
+% Get the 7xN data
+>>>>>>> 12fa676044bb222c585eb651b61cf2353b72993f
 X_attitude = out.X_attitude.Data;
 
 % Extract quaternion and angular velocity
 q = X_attitude(1:4, :);
 w = X_attitude(5:7, :);
 
+<<<<<<< HEAD
 % Extract 321 euler angles
 Euler321 = out.eulerangles.Data;
 Euler321 = Euler321(:, : ) * 1/d2r;
  
+=======
+>>>>>>> 12fa676044bb222c585eb651b61cf2353b72993f
 % Use simulation time
 t = out.X_attitude.Time;
 
@@ -300,7 +327,11 @@ plot(t, q)
 grid on
 xlabel('Time [s]')
 ylabel('Quaternion')
+<<<<<<< HEAD
 legend('$q_0$', '$q_1$', '$q_2$', '$q_3$', 'Interpreter', 'latex')
+=======
+legend('$q_1$', '$q_2$', '$q_3$', '$q_4$', 'Interpreter', 'latex')
+>>>>>>> 12fa676044bb222c585eb651b61cf2353b72993f
 title('Attitude Quaternion')
 
 % Angular-velocity plot
@@ -310,6 +341,7 @@ grid on
 xlabel('Time [s]')
 ylabel('Angular Velocity [rad/s]')
 legend('$\omega_x$', '$\omega_y$', '$\omega_z$', 'Interpreter', 'latex')
+<<<<<<< HEAD
 title('Body Angular Velocity')
 
 % 321 Euler Angle Plot
@@ -321,3 +353,6 @@ ylabel('321 Euler Angles [deg]')
 legend('$\psi$', '$\theta$', '$\phi$', 'Interpreter', 'latex')
 title('321 Euler Angles')
 >>>>>>> 0c9e4afb4a5dfc308f95dd1dbb383df141b6f90a
+=======
+title('Body Angular Velocity')
+>>>>>>> 12fa676044bb222c585eb651b61cf2353b72993f
