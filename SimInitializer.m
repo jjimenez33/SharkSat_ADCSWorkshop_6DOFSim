@@ -33,7 +33,7 @@ inertia = diag([0.05, 0.05, 0.01]); % ~ inertia of a 3U [kg-m^2]
 % Initial quaternion
 q0 = [1 0 0 0]'; % "woah woah woah woah, this is the adjoint" ~ Mason 2026
 % Initial angular velocity [rad/s]
-w0 = [1.77, 1.77, 1.77]' * d2r;
+w0 = [0.02, 0.02, 0.05]' * d2r;
 attitudeState0 = [q0' w0']';
 
 out = sim('ADCSWorkshop2026_6DOFSim.slx');
@@ -47,6 +47,7 @@ t = out.X_Orbit_ECI.Time;
 
 % Get the 6xN data
 X_Orbit_ECI = out.X_Orbit_ECI.Data;
+
 % Position
 rx_eci = squeeze(X_Orbit_ECI(1,1,:));
 ry_eci = squeeze(X_Orbit_ECI(2,1,:));
@@ -120,23 +121,41 @@ w = X_attitude(5:7, :);
 % Extract 321 euler angles
 Euler321 = out.eulerangles.Data;
 Euler321 = Euler321(:, : ) * 1/d2r;
- 
+
+% Get 4xN estimation data
+q_est = squeeze(out.q_est.Data);
+Euler321_est = squeeze(out.eulerangles_est.Data) * 1/d2r;
+
+% Flip estimated quaternion signs to match truth quaternion
+for k = 1:size(q_est, 2)
+    if dot(q(:, k), q_est(:, k)) < 0
+        q_est(:, k) = -q_est(:, k);
+    end
+end
+
 % Use simulation time
 t = out.X_attitude.Time;
 
 % Quaternion plot
 figure
 plot(t, q)
+hold on
+set(gca, 'ColorOrderIndex', 1)
+
+plot(t, q_est, '--')
 grid on
 xlabel('Time [s]')
 ylabel('Quaternion')
-legend('$q_0$', '$q_1$', '$q_2$', '$q_3$', 'Interpreter', 'latex')
+legend('$q_0$', '$q_1$', '$q_2$', '$q_3$', ...
+    '$\hat{q}_0$', '$\hat{q}_1$', '$\hat{q}_2$', '$\hat{q}_3$', ...
+    'Interpreter', 'latex')
 title('Attitude Quaternion')
 
 % Angular-velocity plot
 figure
 plot(t, w)
 grid on
+
 xlabel('Time [s]')
 ylabel('Angular Velocity [rad/s]')
 legend('$\omega_x$', '$\omega_y$', '$\omega_z$', 'Interpreter', 'latex')
@@ -145,8 +164,14 @@ title('Body Angular Velocity')
 % 321 Euler Angle Plot
 figure
 plot(t, Euler321)
+hold on
+set(gca, 'ColorOrderIndex', 1)
+
+plot(t, Euler321_est, '--')
 grid on
 xlabel('Time [s]')
 ylabel('321 Euler Angles [deg]')
-legend('$\psi$', '$\theta$', '$\phi$', 'Interpreter', 'latex')
+legend('$\psi$', '$\theta$', '$\phi$', ...
+    '$\hat{\psi}$', '$\hat{\theta}$', '$\hat{\phi}$', ...
+    'Interpreter', 'latex')
 title('321 Euler Angles')
