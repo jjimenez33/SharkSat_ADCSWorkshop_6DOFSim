@@ -36,6 +36,14 @@ q0 = [1 0 0 0]'; % "woah woah woah woah, this is the adjoint" ~ Mason 2026
 w0 = [0.02, 0.02, 0.05]' * d2r;
 attitudeState0 = [q0' w0']';
 
+% Initial lvlh quaternion
+% Assemble initial LVLH Frame Rotation Matrix (ECI -> LVLH)
+z0_lvlh = -r0 / norm(r0); % Pointing to Center of Earth (Nadir Pointing)
+y0_lvlh = -(cross(r0, v0)) / norm(cross(r0, v0));
+x0_lvlh = cross(y0_lvlh, z0_lvlh);
+R_LVLH = [x0_lvlh, y0_lvlh, z0_lvlh];
+q0_lvlh = dcm2quat(R_LVLH);
+
 out = sim('ADCSWorkshop2026_6DOFSim.slx');
 
 %% ---Orbit Plots--- %%
@@ -175,3 +183,32 @@ legend('$\psi$', '$\theta$', '$\phi$', ...
     '$\hat{\psi}$', '$\hat{\theta}$', '$\hat{\phi}$', ...
     'Interpreter', 'latex')
 title('321 Euler Angles')
+
+%% --Control System Plots-- %%
+% Get the 3xN Control Torque Data
+L_control = out.L_control.Data;
+L_control = L_control(:, :);
+figure
+plot(t, L_control)
+set(gca, 'ColorOrderIndex', 1)
+grid on
+xlabel('Time [s]')
+ylabel('Control Torques [Nm]')
+legend('Lx, Ly, Lz')
+title('PD Controller Commanded Torques')
+
+% Get the 4xN Quaternion Error Data
+q_error = squeeze(out.q_error.Data);
+q_error = q_error(:, :);
+
+figure
+plot(t, q_error, 'LineWidth', 1.5)
+grid on
+xlabel('Time [s]')
+ylabel('Quaternion Error')
+legend('\delta q_0', '\delta q_1', '\delta q_2', '\delta q_3', ...
+       'Interpreter', 'tex', 'Location', 'best')
+title('Quaternion Attitude Error')
+
+
+
